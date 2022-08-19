@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsInt, Min } from 'class-validator';
-import { toNumber } from 'src/common/helper/cast.helper';
+import { toNumber } from '../../../common/helper/cast.helper';
 
-export class GetWaterBucketInput {
+export class GetAmountWantedWaterInput {
   @ApiProperty({
     description: 'The value of the bucket X',
     type: 'number',
-    example: 100,
+    example: 10,
   })
-  @Transform(({ value }) => toNumber(value, { default: 0, min: 0 }))
+  @Transform(({ value }) => toNumber(value))
   @IsInt()
   @Min(0)
   readonly bucketX: number;
@@ -17,20 +17,20 @@ export class GetWaterBucketInput {
   @ApiProperty({
     description: 'The value of the bucket Y',
     type: 'number',
-    example: 100,
+    example: 2,
   })
-  @Transform(({ value }) => toNumber(value, { default: 0, min: 0 }))
+  @Transform(({ value }) => toNumber(value))
   @IsInt()
   @Min(0)
   readonly bucketY: number;
 
   @ApiProperty({
-    description: 'The value of the amount wanted Z',
+    description: 'The value of the amount wanted',
     type: 'number',
-    example: 100,
+    example: 8,
   })
-  @Transform(({ value }) => toNumber(value, { default: 0, min: 0 }))
+  @Transform(({ value }) => toNumber(value))
   @IsInt()
-  @Min(0)
+  @Min(1)
   readonly amountWanted: number;
 }

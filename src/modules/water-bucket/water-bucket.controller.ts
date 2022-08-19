@@ -1,6 +1,7 @@
 import { Controller, Get, HttpStatus, Query } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { GetWaterBucketInput } from './dto/get-water-bucket-input.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GetAmountWantedWaterInput } from './dto/get-amount-wanted-water-input.dto';
+import { GetAmountWantedWaterOutPut } from './dto/get-amount-wanted-water.output.dto';
 import { WaterBucketService } from './water-bucket.service';
 
 @Controller('water-bucket')
@@ -10,18 +11,18 @@ export class WaterBucketController {
   @ApiTags('Water Bucket Challenge')
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'An object with steps to return amount of water',
-    //type: any,
+    description: 'An object with steps to return amount wanted of water',
+    type: [GetAmountWantedWaterOutPut],
   })
   @ApiOperation({
-    summary: 'Get all the steps to return the amount of water ',
+    summary: 'Get all the steps to return the amount wanted of water ',
     description:
-      'This endpoint will process the inputs and return all steps to get the amount of water',
+      'This endpoint will process the inputs and return all steps to get the amount wanted of water',
   })
   @Get()
-  async getStatusSummaryReport(
-    @Query() input: GetWaterBucketInput,
-  ): Promise<any> {
-    //return this.waterBuckerServicer.
+  async getAmountWater(
+    @Query() input: GetAmountWantedWaterInput,
+  ): Promise<GetAmountWantedWaterOutPut[]> {
+    return this.waterBuckerServicer.getAmountWantedOfWater(input);
   }
 }
