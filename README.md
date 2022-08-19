@@ -29,6 +29,13 @@ $ npm run test
 $ npm run test:cov
 ```
 
+## Debug
+
+```bash
+# debug
+$ npm run start:debug
+
+```
 
 ## Stack
 
@@ -40,10 +47,10 @@ $ npm run test:cov
 
 
 
-   [Swagger]: <https://swagger.io>
-   [Click Here]: <http://localhost:3000/docs>
-   [NestJs]: <https://nestjs.com/>  
-   [Jest]: <https://jestjs.io/>
-   [node.js]: <http://nodejs.org>
-  
+[Swagger]: <https://swagger.io>
+[Click Here]: <http://localhost:3000/docs>
+[NestJs]: <https://nestjs.com/>  
+[Jest]: <https://jestjs.io/>
+[node.js]: <http://nodejs.org>
+
  
