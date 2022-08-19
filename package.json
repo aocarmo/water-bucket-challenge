@@ -1,8 +1,8 @@
 {
   "name": "water-bucket-challenge",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Water Bucker challenge",
+  "author": "Alex Carmo",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
