@@ -18,35 +18,41 @@ export class WaterBucketProcess {
     );
 
     if (!isSolved) {
-      if (smallerBucket.amount === 0) {
-        output.explanation = smallerBucket.fill();
-        output.bucketX =
-          smallerBucket.name === 'bucketX'
-            ? smallerBucket.amount
-            : biggerBucket.amount;
+      if (smallerBucket.size === amountWanted) {
+        const action = smallerBucket.fill();
+        return this.getStepDescription({
+          action,
+          smallerBucket,
+          biggerBucket,
+        });
+      }
 
-        output.bucketY =
-          smallerBucket.name === 'bucketY'
-            ? smallerBucket.amount
-            : biggerBucket.amount;
-        return output;
+      if (biggerBucket.size === amountWanted) {
+        const action = biggerBucket.fill();
+        return this.getStepDescription({
+          action,
+          smallerBucket,
+          biggerBucket,
+        });
+      }
+
+      if (smallerBucket.amount === 0) {
+        const action = smallerBucket.fill();
+        return this.getStepDescription({
+          action,
+          smallerBucket,
+          biggerBucket,
+        });
       }
 
       if (smallerBucket.amount !== 0) {
-        output.explanation = smallerBucket.transfer(
+        const action = smallerBucket.transfer(smallerBucket, biggerBucket);
+
+        return this.getStepDescription({
+          action,
           smallerBucket,
           biggerBucket,
-        );
-        output.bucketX =
-          smallerBucket.name === 'bucketX'
-            ? smallerBucket.amount
-            : biggerBucket.amount;
-
-        output.bucketY =
-          smallerBucket.name === 'bucketY'
-            ? smallerBucket.amount
-            : biggerBucket.amount;
-        return output;
+        });
       }
     }
 
@@ -73,14 +79,37 @@ export class WaterBucketProcess {
     }
 
     if (
-      input.amountWanted %
-        this.getCommomDivisor(input.bucketX, input.bucketY) !==
-      0
+      this.getCommomDivisor(input.bucketX, input.amountWanted) < 2 &&
+      this.getCommomDivisor(input.bucketY, input.amountWanted) < 2
     ) {
       return false;
     }
 
     return true;
+  }
+
+  private getStepDescription({
+    action,
+    smallerBucket,
+    biggerBucket,
+  }: {
+    action: string;
+    smallerBucket: Bucket;
+    biggerBucket: Bucket;
+  }): GetAmountWantedWaterOutPut {
+    const output = new GetAmountWantedWaterOutPut();
+
+    output.explanation = action;
+    output.bucketX =
+      smallerBucket.name === 'bucketX'
+        ? smallerBucket.amount
+        : biggerBucket.amount;
+
+    output.bucketY =
+      smallerBucket.name === 'bucketY'
+        ? smallerBucket.amount
+        : biggerBucket.amount;
+    return output;
   }
 
   private getCommomDivisor(a: number, b: number): number {
