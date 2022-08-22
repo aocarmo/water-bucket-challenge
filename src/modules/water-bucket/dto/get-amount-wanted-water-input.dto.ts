@@ -12,7 +12,7 @@ export class GetAmountWantedWaterInput {
   @Transform(({ value }) => toNumber(value))
   @IsInt()
   @Min(0)
-  readonly bucketX: number;
+  bucketX: number;
 
   @ApiProperty({
     description: 'The value of the bucket Y',
@@ -22,7 +22,7 @@ export class GetAmountWantedWaterInput {
   @Transform(({ value }) => toNumber(value))
   @IsInt()
   @Min(0)
-  readonly bucketY: number;
+  bucketY: number;
 
   @ApiProperty({
     description: 'The value of the amount wanted',

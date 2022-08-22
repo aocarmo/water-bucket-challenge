@@ -23,13 +23,23 @@ describe('WaterBucketService', () => {
   it('should be able to get amount wanted of water', () => {
     const input: GetAmountWantedWaterInput = {
       amountWanted: 4,
-      bucketX: 2,
-      bucketY: 10,
+      bucketX: 3,
+      bucketY: 5,
     };
 
     const output: GetAmountWantedWaterOutPut[] = [
       {
         explanation: 'Fill bucketX',
+        bucketX: 5,
+        bucketY: 0,
+      },
+      {
+        explanation: 'Tranfer from bucketX to bucketY',
+        bucketX: 2,
+        bucketY: 3,
+      },
+      {
+        explanation: 'Empty bucketY',
         bucketX: 2,
         bucketY: 0,
       },
@@ -40,13 +50,13 @@ describe('WaterBucketService', () => {
       },
       {
         explanation: 'Fill bucketX',
-        bucketX: 2,
+        bucketX: 5,
         bucketY: 2,
       },
       {
         explanation: 'Tranfer from bucketX to bucketY',
-        bucketX: 0,
-        bucketY: 4,
+        bucketX: 4,
+        bucketY: 3,
       },
     ];
 

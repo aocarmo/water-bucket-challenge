@@ -6,68 +6,62 @@ import { GetAmountWantedWaterOutPut } from './dto/get-amount-wanted-water.output
 @Injectable()
 export class WaterBucketProcess {
   public process(
-    smallerBucket: Bucket,
-    biggerBucket: Bucket,
+    fromBucket: Bucket,
+    toBucket: Bucket,
     amountWanted: number,
-  ): GetAmountWantedWaterOutPut {
-    const output = new GetAmountWantedWaterOutPut();
-    const isSolved = this.checkIsSolved(
-      smallerBucket,
-      biggerBucket,
-      amountWanted,
-    );
+  ): GetAmountWantedWaterOutPut[] {
+    fromBucket.empty();
+    toBucket.empty();
 
-    if (!isSolved) {
-      if (smallerBucket.size === amountWanted) {
-        const action = smallerBucket.fill();
-        return this.getStepDescription({
-          action,
-          smallerBucket,
-          biggerBucket,
-        });
+    let action = fromBucket.fill();
+
+    const path: GetAmountWantedWaterOutPut[] = [];
+
+    while (
+      fromBucket.amount !== amountWanted &&
+      toBucket.amount !== amountWanted
+    ) {
+      path.push(this.getStepDescription(fromBucket, toBucket, action));
+
+      const temp = Math.min(fromBucket.amount, toBucket.size - toBucket.amount);
+
+      action = fromBucket.transfer(fromBucket, toBucket, temp);
+
+      path.push(this.getStepDescription(fromBucket, toBucket, action));
+
+      if (
+        fromBucket.amount == amountWanted ||
+        toBucket.amount == amountWanted
+      ) {
+        break;
       }
 
-      if (biggerBucket.size === amountWanted) {
-        const action = biggerBucket.fill();
-        return this.getStepDescription({
-          action,
-          smallerBucket,
-          biggerBucket,
-        });
+      if (fromBucket.amount == 0) {
+        action = fromBucket.fill();
       }
 
-      if (smallerBucket.amount === 0) {
-        const action = smallerBucket.fill();
-        return this.getStepDescription({
-          action,
-          smallerBucket,
-          biggerBucket,
-        });
-      }
-
-      if (smallerBucket.amount !== 0) {
-        const action = smallerBucket.transfer(smallerBucket, biggerBucket);
-
-        return this.getStepDescription({
-          action,
-          smallerBucket,
-          biggerBucket,
-        });
+      if (toBucket.amount == toBucket.size) {
+        action = toBucket.empty();
       }
     }
 
-    return output;
+    return path;
   }
 
-  public checkIsSolved(
-    bucketX: Bucket,
-    bucketY: Bucket,
-    amountWanted: number,
-  ): boolean {
-    if (bucketX.amount === amountWanted || bucketY.amount === amountWanted)
-      return true;
+  private getStepDescription(
+    fromBucket: Bucket,
+    toBucket: Bucket,
+    action: string,
+  ): GetAmountWantedWaterOutPut {
+    const output = new GetAmountWantedWaterOutPut();
 
-    return false;
+    output.explanation = action;
+    output.bucketX =
+      fromBucket.name === 'bucketX' ? fromBucket.amount : toBucket.amount;
+
+    output.bucketY =
+      fromBucket.name === 'bucketY' ? fromBucket.amount : toBucket.amount;
+    return output;
   }
 
   public validateInput(input: GetAmountWantedWaterInput): boolean {
@@ -79,37 +73,14 @@ export class WaterBucketProcess {
     }
 
     if (
-      this.getCommomDivisor(input.bucketX, input.amountWanted) < 2 &&
-      this.getCommomDivisor(input.bucketY, input.amountWanted) < 2
+      input.amountWanted %
+        this.getCommomDivisor(input.bucketX, input.bucketY) !==
+      0
     ) {
       return false;
     }
 
     return true;
-  }
-
-  private getStepDescription({
-    action,
-    smallerBucket,
-    biggerBucket,
-  }: {
-    action: string;
-    smallerBucket: Bucket;
-    biggerBucket: Bucket;
-  }): GetAmountWantedWaterOutPut {
-    const output = new GetAmountWantedWaterOutPut();
-
-    output.explanation = action;
-    output.bucketX =
-      smallerBucket.name === 'bucketX'
-        ? smallerBucket.amount
-        : biggerBucket.amount;
-
-    output.bucketY =
-      smallerBucket.name === 'bucketY'
-        ? smallerBucket.amount
-        : biggerBucket.amount;
-    return output;
   }
 
   private getCommomDivisor(a: number, b: number): number {

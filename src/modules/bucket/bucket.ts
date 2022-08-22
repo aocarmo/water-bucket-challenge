@@ -20,30 +20,10 @@ export class Bucket {
     return `Empty ${this._name}`;
   }
 
-  transfer(smallerBucket: Bucket, biggerBucket: Bucket) {
-    if (biggerBucket._size - biggerBucket._amount >= smallerBucket._amount) {
-      biggerBucket._amount += smallerBucket._amount;
-      smallerBucket._amount = 0;
-      return `Tranfer from ${smallerBucket._name} to ${biggerBucket._name}`;
-    }
-  }
-
-  transfer2(bucketX: Bucket, bucketY: Bucket): string {
-    if (bucketX > bucketY) {
-      if (bucketX._size - bucketX._amount >= bucketY._amount) {
-        bucketX._amount += bucketY._amount;
-        bucketY._amount = 0;
-        return `Tranfer from ${bucketY._name} to ${bucketX._name}`;
-      }
-    }
-
-    if (bucketY > bucketX) {
-      if (bucketY._size - bucketY._amount >= bucketX._amount) {
-        bucketY._amount += bucketX._amount;
-        bucketX._amount = 0;
-        return `Tranfer from ${bucketX._name} to ${bucketY._name}`;
-      }
-    }
+  transfer(from: Bucket, to: Bucket, value: number) {
+    to._amount = to.amount + value;
+    from._amount = from.amount - value;
+    return `Tranfer from ${from._name} to ${to._name}`;
   }
 
   get amount(): number {
@@ -53,6 +33,7 @@ export class Bucket {
   get name(): string {
     return this._name;
   }
+
   get size(): number {
     return this._size;
   }

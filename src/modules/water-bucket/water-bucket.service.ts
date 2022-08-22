@@ -10,42 +10,36 @@ export class WaterBucketService {
     @Inject(WaterBucketProcess)
     private readonly waterBucketProcess: WaterBucketProcess,
   ) {}
+
   public getAmountWantedOfWater(
     input: GetAmountWantedWaterInput,
   ): GetAmountWantedWaterOutPut[] {
+    if (input.bucketY > input.bucketX) {
+      const temp = input.bucketY;
+      input.bucketY = input.bucketX;
+      input.bucketX = temp;
+    }
+
     const isValidInput = this.waterBucketProcess.validateInput(input);
 
     if (!isValidInput) {
       throw new HttpException('No Solution', HttpStatus.PRECONDITION_FAILED);
     }
 
-    const response: GetAmountWantedWaterOutPut[] = [];
-
     const bucketX = new Bucket(input.bucketX, 'bucketX');
     const bucketY = new Bucket(input.bucketY, 'bucketY');
 
-    while (
-      !this.waterBucketProcess.checkIsSolved(
-        bucketX,
-        bucketY,
-        input.amountWanted,
-      )
-    ) {
-      const step =
-        bucketX.size >= bucketY.size
-          ? this.waterBucketProcess.process(
-              bucketY,
-              bucketX,
-              input.amountWanted,
-            )
-          : this.waterBucketProcess.process(
-              bucketX,
-              bucketY,
-              input.amountWanted,
-            );
-      response.push(step);
-    }
+    const firstPath = this.waterBucketProcess.process(
+      bucketX,
+      bucketY,
+      input.amountWanted,
+    );
+    const secondPath = this.waterBucketProcess.process(
+      bucketY,
+      bucketX,
+      input.amountWanted,
+    );
 
-    return response;
+    return firstPath.length < secondPath.length ? firstPath : secondPath;
   }
 }
